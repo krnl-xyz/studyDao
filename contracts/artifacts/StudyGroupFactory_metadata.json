@@ -1,0 +1,306 @@
+{
+	"compiler": {
+		"version": "0.8.24+commit.e11b9ed9"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_studyTokenAddress",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "groupAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "creator",
+						"type": "address"
+					}
+				],
+				"name": "StudyGroupCreated",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "minStakeAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "createStudyGroup",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getAllStudyGroups",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getStudyGroupAt",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getStudyGroupCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "studyGroups",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "studyToken",
+				"outputs": [
+					{
+						"internalType": "contract StudyToken",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "Contract for creating and managing study groups",
+			"kind": "dev",
+			"methods": {
+				"constructor": {
+					"details": "Constructor to create the factory",
+					"params": {
+						"_studyTokenAddress": "Address of the StudyToken contract"
+					}
+				},
+				"createStudyGroup(string,string,uint256)": {
+					"details": "Create a new study group",
+					"params": {
+						"description": "Description of the study group",
+						"minStakeAmount": "Minimum amount required to join the group",
+						"name": "Name of the study group"
+					},
+					"returns": {
+						"_0": "The address of the newly created study group"
+					}
+				},
+				"getAllStudyGroups()": {
+					"details": "Get all study groups",
+					"returns": {
+						"_0": "Array of study group addresses"
+					}
+				},
+				"getStudyGroupAt(uint256)": {
+					"details": "Get study group at specific index",
+					"params": {
+						"index": "Index in the array"
+					},
+					"returns": {
+						"_0": "Address of the study group"
+					}
+				},
+				"getStudyGroupCount()": {
+					"details": "Get the total number of study groups",
+					"returns": {
+						"_0": "Number of study groups"
+					}
+				}
+			},
+			"title": "StudyGroupFactory",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/StudyGroupFactory.sol": "StudyGroupFactory"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@openzeppelin/contracts/access/Ownable.sol": {
+			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
+				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
+			]
+		},
+		"@openzeppelin/contracts/interfaces/draft-IERC6093.sol": {
+			"keccak256": "0x880da465c203cec76b10d72dbd87c80f387df4102274f23eea1f9c9b0918792b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://399594cd8bb0143bc9e55e0f1d071d0d8c850a394fb7a319d50edd55d9ed822b",
+				"dweb:/ipfs/QmbPZzgtT6LEm9CMqWfagQFwETbV1ztpECBB1DtQHrKiRz"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/ERC20.sol": {
+			"keccak256": "0x41f6b3b9e030561e7896dbef372b499cc8d418a80c3884a4d65a68f2fdc7493a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://80b0992a11b2fd1f75ced2971696d07bbd1d19ce6761dd50d8b6d48aa435f42a",
+				"dweb:/ipfs/QmZDe5xd2gXHjVEjv9t8C1KQ68K5T8qFwdinwQgmP3rF3x"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0xe06a3f08a987af6ad2e1c1e774405d4fe08f1694b67517438b467cecf0da0ef7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://df6f0c459663c9858b6cba2cda1d14a7d05a985bed6d2de72bd8e78c25ee79db",
+				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+			"keccak256": "0x70f2f713b13b7ce4610bcd0ac9fec0f3cc43693b043abcb8dc40a42a726eb330",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c13d13304ac79a83ab1c30168967d19e2203342ebbd6a9bbce4db7550522dcbf",
+				"dweb:/ipfs/QmeN5jKMN2vw5bhacr6tkg78afbTTZUeaacNHqjWt4Ew1r"
+			]
+		},
+		"@openzeppelin/contracts/utils/Context.sol": {
+			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+			]
+		},
+		"contracts/StudyGroup.sol": {
+			"keccak256": "0xceea82d387b37fd6ed9314cf292f8e64d7bbc038c7c4f1904e88ffa690df1af6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d190022ffd52bf355893d7481c50215186d6bda758600ce39509af467acdfb67",
+				"dweb:/ipfs/QmWdKF9otGHUujJmufB1GLZpcDCuhGipxbchK6Q4R3FviE"
+			]
+		},
+		"contracts/StudyGroupFactory.sol": {
+			"keccak256": "0x6007e5aa0d7e7b6aab123a538242005779525e71935d66102e302ee985866bdd",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://182a10193102cdaa7f00d74dad57b0a20b98e2dff64b167865b99a9e4c331997",
+				"dweb:/ipfs/Qmdrf1zmTYFBpgTrQnEAFZUD3MFdVpNdT36cZQVvTLhBEC"
+			]
+		},
+		"contracts/StudyToken.sol": {
+			"keccak256": "0x219a3d7da16fd6da0842383352c6c0ccceb5507b4f5e349214554ea0a7a4566c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a02992842f5b96f294ccdf6cf50cb9e88e85200a4ae2f05427abf43e2d224fb5",
+				"dweb:/ipfs/QmRzAF8EvTq177hsD6PP8tUxxLCNiyE3mcWB5PYXpasw7S"
+			]
+		}
+	},
+	"version": 1
+}
