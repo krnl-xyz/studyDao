@@ -16,10 +16,69 @@
 						"internalType": "uint256",
 						"name": "_defaultDailyLimit",
 						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_tokenAuthorityPublicKey",
+						"type": "address"
 					}
 				],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "ECDSAInvalidSignature",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "length",
+						"type": "uint256"
+					}
+				],
+				"name": "ECDSAInvalidSignatureLength",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					}
+				],
+				"name": "ECDSAInvalidSignatureS",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "OwnableInvalidOwner",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "OwnableUnauthorizedAccount",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "UnauthorizedTransaction",
+				"type": "error"
 			},
 			{
 				"anonymous": false,
@@ -45,6 +104,50 @@
 					}
 				],
 				"name": "ContractDeauthorized",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "kernelId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "score",
+						"type": "uint256"
+					}
+				],
+				"name": "KernelOperationResult",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
 				"type": "event"
 			},
 			{
@@ -117,6 +220,19 @@
 				"type": "event"
 			},
 			{
+				"inputs": [],
+				"name": "admin",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -143,6 +259,52 @@
 					}
 				],
 				"name": "authorizeMint",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes",
+								"name": "auth",
+								"type": "bytes"
+							},
+							{
+								"internalType": "bytes",
+								"name": "kernelResponses",
+								"type": "bytes"
+							},
+							{
+								"internalType": "bytes",
+								"name": "kernelParams",
+								"type": "bytes"
+							}
+						],
+						"internalType": "struct KrnlPayload",
+						"name": "krnlPayload",
+						"type": "tuple"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "authorizeMintWithKRNL",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -204,6 +366,57 @@
 			{
 				"inputs": [
 					{
+						"components": [
+							{
+								"internalType": "bytes",
+								"name": "auth",
+								"type": "bytes"
+							},
+							{
+								"internalType": "bytes",
+								"name": "kernelResponses",
+								"type": "bytes"
+							},
+							{
+								"internalType": "bytes",
+								"name": "kernelParams",
+								"type": "bytes"
+							}
+						],
+						"internalType": "struct KrnlPayload",
+						"name": "krnlPayload",
+						"type": "tuple"
+					},
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "authorizeTransferWithKRNL",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
@@ -241,6 +454,25 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"name": "executed",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -322,6 +554,52 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes",
+								"name": "auth",
+								"type": "bytes"
+							},
+							{
+								"internalType": "bytes",
+								"name": "kernelResponses",
+								"type": "bytes"
+							},
+							{
+								"internalType": "bytes",
+								"name": "kernelParams",
+								"type": "bytes"
+							}
+						],
+						"internalType": "struct KrnlPayload",
+						"name": "krnlPayload",
+						"type": "tuple"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "mintTokensWithKRNL",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "owner",
 				"outputs": [
@@ -332,6 +610,13 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "renounceOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -377,6 +662,19 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "_tokenAuthorityPublicKey",
+						"type": "address"
+					}
+				],
+				"name": "setTokenAuthorityPublicKey",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "user",
 						"type": "address"
 					},
@@ -402,6 +700,32 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "tokenAuthorityPublicKey",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -449,7 +773,34 @@
 			}
 		],
 		"devdoc": {
-			"details": "Contract for managing token authority operations for StudyDAO",
+			"details": "Contract for managing token authority operations for StudyDAO with KRNL integration",
+			"errors": {
+				"ECDSAInvalidSignature()": [
+					{
+						"details": "The signature derives the `address(0)`."
+					}
+				],
+				"ECDSAInvalidSignatureLength(uint256)": [
+					{
+						"details": "The signature has an invalid length."
+					}
+				],
+				"ECDSAInvalidSignatureS(bytes32)": [
+					{
+						"details": "The signature has an S value that is in the upper half order."
+					}
+				],
+				"OwnableInvalidOwner(address)": [
+					{
+						"details": "The owner is not a valid owner account. (eg. `address(0)`)"
+					}
+				],
+				"OwnableUnauthorizedAccount(address)": [
+					{
+						"details": "The caller account is not authorized to perform an operation."
+					}
+				]
+			},
 			"kind": "dev",
 			"methods": {
 				"authorizeContract(address)": {
@@ -459,9 +810,13 @@
 					}
 				},
 				"authorizeMint(address,uint256)": {
-					"details": "Authorize a token mint operation",
+					"details": "Original authorize mint function (keeping for compatibility)"
+				},
+				"authorizeMintWithKRNL((bytes,bytes,bytes),address,uint256)": {
+					"details": "Authorize a token mint operation with KRNL verification",
 					"params": {
 						"amount": "Amount of tokens to mint",
+						"krnlPayload": "The KRNL payload for verification",
 						"to": "Recipient of the tokens"
 					},
 					"returns": {
@@ -478,10 +833,14 @@
 					}
 				},
 				"authorizeTransfer(address,address,uint256)": {
-					"details": "Authorize a token transfer operation",
+					"details": "Original authorize transfer function (keeping for compatibility)"
+				},
+				"authorizeTransferWithKRNL((bytes,bytes,bytes),address,address,uint256)": {
+					"details": "Authorize a token transfer operation with KRNL verification",
 					"params": {
 						"amount": "Amount of tokens to transfer",
 						"from": "Sender of the tokens",
+						"krnlPayload": "The KRNL payload for verification",
 						"to": "Recipient of the tokens"
 					},
 					"returns": {
@@ -489,10 +848,11 @@
 					}
 				},
 				"constructor": {
-					"details": "Constructor to initialize the token authority",
+					"details": "Constructor to initialize the token authority with KRNL support",
 					"params": {
 						"_defaultDailyLimit": "Default daily limit for users",
-						"_studyTokenAddress": "Address of the StudyToken contract"
+						"_studyTokenAddress": "Address of the StudyToken contract",
+						"_tokenAuthorityPublicKey": "Address of the token authority public key for KRNL"
 					}
 				},
 				"deauthorizeContract(address)": {
@@ -526,14 +886,24 @@
 					}
 				},
 				"mintTokens(address,uint256)": {
-					"details": "Mint tokens through the authority (if it's a minter)",
+					"details": "Original mint tokens function (keeping for compatibility)"
+				},
+				"mintTokensWithKRNL((bytes,bytes,bytes),address,uint256)": {
+					"details": "Mint tokens through the authority with KRNL verification",
 					"params": {
 						"amount": "Amount of tokens to mint",
+						"krnlPayload": "The KRNL payload for verification",
 						"to": "Recipient of the tokens"
 					},
 					"returns": {
 						"_0": "Whether the operation was successful"
 					}
+				},
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"renounceOwnership()": {
+					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
 				},
 				"requestMinterRole()": {
 					"details": "Request the token contract to add this authority as a minter",
@@ -559,6 +929,9 @@
 						"limit": "Daily limit amount",
 						"user": "Address of the user"
 					}
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
 				}
 			},
 			"title": "StudyTokenAuthority",
@@ -583,7 +956,8 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": []
+		"remappings": [],
+		"viaIR": true
 	},
 	"sources": {
 		"@openzeppelin/contracts/access/Ownable.sol": {
@@ -634,6 +1008,70 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
+		"@openzeppelin/contracts/utils/Panic.sol": {
+			"keccak256": "0xf7fe324703a64fc51702311dc51562d5cb1497734f074e4f483bfb6717572d7a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c6a5ff4f9fd8649b7ee20800b7fa387d3465bd77cf20c2d1068cd5c98e1ed57a",
+				"dweb:/ipfs/QmVSaVJf9FXFhdYEYeCEfjMVHrxDh5qL4CGkxdMWpQCrqG"
+			]
+		},
+		"@openzeppelin/contracts/utils/Strings.sol": {
+			"keccak256": "0x81c274a60a7ae232ae3dc9ff3a4011b4849a853c13b0832cd3351bb1bb2f0dae",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9da0c20dc74358a2a76330818f3bac9d1e2ce3371aec847b9cbf5d147fbae4f6",
+				"dweb:/ipfs/QmeczhmnFv1hbXKGLwbYXY6Rrytc9a5A2YaRi5QMMgjPnb"
+			]
+		},
+		"@openzeppelin/contracts/utils/cryptography/ECDSA.sol": {
+			"keccak256": "0x69f54c02b7d81d505910ec198c11ed4c6a728418a868b906b4a0cf29946fda84",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8e25e4bdb7ae1f21d23bfee996e22736fc0ab44cfabedac82a757b1edc5623b9",
+				"dweb:/ipfs/QmQdWQvB6JCP9ZMbzi8EvQ1PTETqkcTWrbcVurS7DKpa5n"
+			]
+		},
+		"@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol": {
+			"keccak256": "0x26670fef37d4adf55570ba78815eec5f31cb017e708f61886add4fc4da665631",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b16d45febff462bafd8a5669f904796a835baf607df58a8461916d3bf4f08c59",
+				"dweb:/ipfs/QmU2eJFpjmT4vxeJWJyLeQb8Xht1kdB8Y6MKLDPFA9WPux"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/Math.sol": {
+			"keccak256": "0x1225214420c83ebcca88f2ae2b50f053aaa7df7bd684c3e878d334627f2edfc6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6c5fab4970634f9ab9a620983dc1c8a30153981a0b1a521666e269d0a11399d3",
+				"dweb:/ipfs/QmVRnBC575MESGkEHndjujtR7qub2FzU9RWy9eKLp4hPZB"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/SafeCast.sol": {
+			"keccak256": "0x195533c86d0ef72bcc06456a4f66a9b941f38eb403739b00f21fd7c1abd1ae54",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b1d578337048cad08c1c03041cca5978eff5428aa130c781b271ad9e5566e1f8",
+				"dweb:/ipfs/QmPFKL2r9CBsMwmUqqdcFPfHZB2qcs9g1HDrPxzWSxomvy"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/SignedMath.sol": {
+			"keccak256": "0xb1970fac7b64e6c09611e6691791e848d5e3fe410fa5899e7df2e0afd77a99e3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://db5fbb3dddd8b7047465b62575d96231ba8a2774d37fb4737fbf23340fabbb03",
+				"dweb:/ipfs/QmVUSvooZKEdEdap619tcJjTLcAuH6QBdZqAzWwnAXZAWJ"
+			]
+		},
+		"contracts/KRNL.sol": {
+			"keccak256": "0xd571a967b414cdb226458b0bca7737331a707825c8bd58988d5e949b4da50270",
+			"license": "UNLICENSED",
+			"urls": [
+				"bzz-raw://ad104763cabe893c892dcad8847d1c637db7dc8ae734485d207bf2d22f1e3a07",
+				"dweb:/ipfs/Qmb11HiQ6Ko3A9hUPpiUACdaaNTLK61p7hucTSADkDnzfr"
+			]
+		},
 		"contracts/StudyToken.sol": {
 			"keccak256": "0x219a3d7da16fd6da0842383352c6c0ccceb5507b4f5e349214554ea0a7a4566c",
 			"license": "MIT",
@@ -643,11 +1081,11 @@
 			]
 		},
 		"contracts/StudyTokenAuthority.sol": {
-			"keccak256": "0x1b7dbaab57958954cdd52c13c7c0cab9d9e58ca5f76749fdff4481f5b5e3b91a",
+			"keccak256": "0xc620307ed7001375ed11cac138ac0edbe2f37fe8593e3daf80e1f3569896d163",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e57ddcb7d5badc30ad65b71f64ebe3c9c8b6e8f14ec5f7e7437fd212b3ca1fe0",
-				"dweb:/ipfs/QmXNLU3ESLgUCX9rEKv7mrRKi7wXTcoQCeXBHdFNSrs3jD"
+				"bzz-raw://d4a0e0e62542e848999612644b2a7356477e9ca27bd7dd6e0d00b7710cfac637",
+				"dweb:/ipfs/QmbkNsaYxXSuY22RZPLZJkVLSUNBv8VgMmem7jMLEqbuPw"
 			]
 		}
 	},

@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "./StudyToken.sol";
+import {KRNL, KrnlPayload, KernelParameter, KernelResponse} from "./KRNL.sol";
 
 /**
  * @title StudyTokenAuthority
- * @dev Contract for managing token authority operations for StudyDAO
+ * @dev Contract for managing token authority operations for StudyDAO with KRNL integration
  */
-contract StudyTokenAuthority {
+contract StudyTokenAuthority is KRNL {
     // StudyToken contract reference
     StudyToken public studyToken;
     
-    // Address of the contract owner
-    address public owner;
+    // Address of the contract admin
+    address public admin;
     
     // Mapping to track authorized contracts
     mapping(address => bool) public authorizedContracts;
@@ -32,26 +33,32 @@ contract StudyTokenAuthority {
     event UserLimitSet(address indexed user, uint256 limit);
     event TokenOperationApproved(address indexed user, uint256 amount, string operation);
     event TokenOperationDenied(address indexed user, uint256 amount, string operation);
+    event KernelOperationResult(address indexed user, uint256 kernelId, uint256 score);
     
     // Modifiers
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Only admin can call this function");
         _;
     }
     
-    modifier onlyAuthorized() {
-        require(authorizedContracts[msg.sender] || msg.sender == owner, "Not authorized");
+    modifier onlyAuthorizedContract() {
+        require(authorizedContracts[msg.sender] || msg.sender == admin, "Not authorized");
         _;
     }
     
     /**
-     * @dev Constructor to initialize the token authority
+     * @dev Constructor to initialize the token authority with KRNL support
      * @param _studyTokenAddress Address of the StudyToken contract
      * @param _defaultDailyLimit Default daily limit for users
+     * @param _tokenAuthorityPublicKey Address of the token authority public key for KRNL
      */
-    constructor(address _studyTokenAddress, uint256 _defaultDailyLimit) {
+    constructor(
+        address _studyTokenAddress, 
+        uint256 _defaultDailyLimit,
+        address _tokenAuthorityPublicKey
+    ) KRNL(_tokenAuthorityPublicKey) {
         require(_studyTokenAddress != address(0), "Invalid token address");
-        owner = msg.sender;
+        admin = msg.sender;
         studyToken = StudyToken(_studyTokenAddress);
         defaultDailyLimit = _defaultDailyLimit;
         
@@ -64,7 +71,7 @@ contract StudyTokenAuthority {
      * @dev Authorize a contract to interact with the token authority
      * @param contractAddress Address of the contract to authorize
      */
-    function authorizeContract(address contractAddress) external onlyOwner {
+    function authorizeContract(address contractAddress) external onlyAdmin {
         require(contractAddress != address(0), "Invalid contract address");
         require(!authorizedContracts[contractAddress], "Contract already authorized");
         
@@ -76,7 +83,7 @@ contract StudyTokenAuthority {
      * @dev Deauthorize a contract
      * @param contractAddress Address of the contract to deauthorize
      */
-    function deauthorizeContract(address contractAddress) external onlyOwner {
+    function deauthorizeContract(address contractAddress) external onlyAdmin {
         require(authorizedContracts[contractAddress], "Contract not authorized");
         
         authorizedContracts[contractAddress] = false;
@@ -88,7 +95,7 @@ contract StudyTokenAuthority {
      * @param user Address of the user
      * @param limit Daily limit amount
      */
-    function setUserDailyLimit(address user, uint256 limit) external onlyOwner {
+    function setUserDailyLimit(address user, uint256 limit) external onlyAdmin {
         require(user != address(0), "Invalid user address");
         
         userDailyLimits[user] = limit;
@@ -99,7 +106,7 @@ contract StudyTokenAuthority {
      * @dev Set default daily limit for all users
      * @param limit Default daily limit amount
      */
-    function setDefaultDailyLimit(uint256 limit) external onlyOwner {
+    function setDefaultDailyLimit(uint256 limit) external onlyAdmin {
         defaultDailyLimit = limit;
     }
     
@@ -135,12 +142,50 @@ contract StudyTokenAuthority {
     }
     
     /**
-     * @dev Authorize a token mint operation
+     * @dev Authorize a token mint operation with KRNL verification
+     * @param krnlPayload The KRNL payload for verification
      * @param to Recipient of the tokens
      * @param amount Amount of tokens to mint
      * @return Whether the operation is authorized
      */
-    function authorizeMint(address to, uint256 amount) external onlyAuthorized returns (bool) {
+    function authorizeMintWithKRNL(
+        KrnlPayload memory krnlPayload,
+        address to, 
+        uint256 amount
+    ) external onlyAuthorized(krnlPayload, abi.encode(to, amount)) onlyAuthorizedContract() returns (bool) {
+        uint256 dayNumber = getCurrentDay();
+        uint256 userLimit = getUserDailyLimit(to);
+        uint256 usedToday = userDailyUsage[to][dayNumber];
+        
+        // Decode response from kernel
+        KernelResponse[] memory kernelResponses = abi.decode(krnlPayload.kernelResponses, (KernelResponse[]));
+        uint256 kernelScore = 0;
+        
+        // Process kernel responses - adjust kernelId as needed for your use case
+        for (uint i = 0; i < kernelResponses.length; i++) {
+            // Check for specific kernel ID - replace 337 with your kernel ID
+            if (kernelResponses[i].kernelId == 337) {
+                // Decode the result based on your kernel's response format
+                kernelScore = abi.decode(kernelResponses[i].result, (uint256));
+                emit KernelOperationResult(to, kernelResponses[i].kernelId, kernelScore);
+            }
+        }
+        
+        // You can use kernelScore in your logic if needed
+        if (usedToday + amount <= userLimit) {
+            userDailyUsage[to][dayNumber] = usedToday + amount;
+            emit TokenOperationApproved(to, amount, "mint");
+            return true;
+        } else {
+            emit TokenOperationDenied(to, amount, "mint");
+            return false;
+        }
+    }
+    
+    /**
+     * @dev Original authorize mint function (keeping for compatibility)
+     */
+    function authorizeMint(address to, uint256 amount) external onlyAuthorizedContract() returns (bool) {
         uint256 dayNumber = getCurrentDay();
         uint256 userLimit = getUserDailyLimit(to);
         uint256 usedToday = userDailyUsage[to][dayNumber];
@@ -156,15 +201,42 @@ contract StudyTokenAuthority {
     }
     
     /**
-     * @dev Authorize a token transfer operation
+     * @dev Authorize a token transfer operation with KRNL verification
+     * @param krnlPayload The KRNL payload for verification
      * @param from Sender of the tokens
      * @param to Recipient of the tokens
      * @param amount Amount of tokens to transfer
      * @return Whether the operation is authorized
      */
-    function authorizeTransfer(address from, address to, uint256 amount) external onlyAuthorized returns (bool) {
+    function authorizeTransferWithKRNL(
+        KrnlPayload memory krnlPayload,
+        address from, 
+        address to, 
+        uint256 amount
+    ) external onlyAuthorized(krnlPayload, abi.encode(from, to, amount)) onlyAuthorizedContract() returns (bool) {
+        // Decode response from kernel
+        KernelResponse[] memory kernelResponses = abi.decode(krnlPayload.kernelResponses, (KernelResponse[]));
+        uint256 kernelScore = 0;
+        
+        for (uint i = 0; i < kernelResponses.length; i++) {
+            // Check for specific kernel ID - replace 337 with your kernel ID
+            if (kernelResponses[i].kernelId == 337) {
+                // Decode the result based on your kernel's response format
+                kernelScore = abi.decode(kernelResponses[i].result, (uint256));
+                emit KernelOperationResult(from, kernelResponses[i].kernelId, kernelScore);
+            }
+        }
+        
+        // You can implement additional logic based on kernelScore here
+        emit TokenOperationApproved(from, amount, "transfer");
+        return true;
+    }
+    
+    /**
+     * @dev Original authorize transfer function (keeping for compatibility)
+     */
+    function authorizeTransfer(address from, address to, uint256 amount) external onlyAuthorizedContract() returns (bool) {
         // For this simple implementation, we'll always authorize transfers
-        // More complex logic could be added here
         emit TokenOperationApproved(from, amount, "transfer");
         return true;
     }
@@ -173,7 +245,7 @@ contract StudyTokenAuthority {
      * @dev Connect to an existing StudyToken contract
      * @param _studyTokenAddress Address of the StudyToken contract
      */
-    function setStudyToken(address _studyTokenAddress) external onlyOwner {
+    function setStudyToken(address _studyTokenAddress) external onlyAdmin {
         require(_studyTokenAddress != address(0), "Invalid token address");
         studyToken = StudyToken(_studyTokenAddress);
     }
@@ -182,7 +254,7 @@ contract StudyTokenAuthority {
      * @dev Request the token contract to add this authority as a minter
      * @return Whether the operation was successful
      */
-    function requestMinterRole() external onlyOwner returns (bool) {
+    function requestMinterRole() external onlyAdmin returns (bool) {
         try studyToken.addMinter(address(this)) {
             return true;
         } catch {
@@ -191,12 +263,43 @@ contract StudyTokenAuthority {
     }
     
     /**
-     * @dev Mint tokens through the authority (if it's a minter)
+     * @dev Mint tokens through the authority with KRNL verification
+     * @param krnlPayload The KRNL payload for verification
      * @param to Recipient of the tokens
      * @param amount Amount of tokens to mint
      * @return Whether the operation was successful
      */
-    function mintTokens(address to, uint256 amount) external onlyOwner returns (bool) {
+    function mintTokensWithKRNL(
+        KrnlPayload memory krnlPayload,
+        address to, 
+        uint256 amount
+    ) external onlyAdmin onlyAuthorized(krnlPayload, abi.encode(to, amount)) returns (bool) {
+        // Decode response from kernel
+        KernelResponse[] memory kernelResponses = abi.decode(krnlPayload.kernelResponses, (KernelResponse[]));
+        uint256 kernelScore = 0;
+        
+        for (uint i = 0; i < kernelResponses.length; i++) {
+            // Check for specific kernel ID - replace 337 with your kernel ID
+            if (kernelResponses[i].kernelId == 337) {
+                // Decode the result based on your kernel's response format
+                kernelScore = abi.decode(kernelResponses[i].result, (uint256));
+                emit KernelOperationResult(to, kernelResponses[i].kernelId, kernelScore);
+            }
+        }
+        
+        try studyToken.mintReward(to, amount) {
+            emit TokenOperationApproved(to, amount, "authorityMint");
+            return true;
+        } catch {
+            emit TokenOperationDenied(to, amount, "authorityMint");
+            return false;
+        }
+    }
+    
+    /**
+     * @dev Original mint tokens function (keeping for compatibility)
+     */
+    function mintTokens(address to, uint256 amount) external onlyAdmin returns (bool) {
         try studyToken.mintReward(to, amount) {
             emit TokenOperationApproved(to, amount, "authorityMint");
             return true;
@@ -211,7 +314,7 @@ contract StudyTokenAuthority {
      * @param studyGroupAddress Address of the StudyGroup contract
      * @return Whether the operation was successful
      */
-    function authorizeStudyGroupAsMinter(address studyGroupAddress) external onlyOwner returns (bool) {
+    function authorizeStudyGroupAsMinter(address studyGroupAddress) external onlyAdmin returns (bool) {
         require(studyGroupAddress != address(0), "Invalid study group address");
         
         try studyToken.addMinter(studyGroupAddress) {

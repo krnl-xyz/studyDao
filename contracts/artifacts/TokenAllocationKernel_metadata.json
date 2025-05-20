@@ -1,0 +1,410 @@
+{
+	"compiler": {
+		"version": "0.8.24+commit.e11b9ed9"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newAuthority",
+						"type": "address"
+					}
+				],
+				"name": "AuthorityUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					}
+				],
+				"name": "MetricsUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "updater",
+						"type": "address"
+					}
+				],
+				"name": "UpdaterAuthorized",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "updater",
+						"type": "address"
+					}
+				],
+				"name": "UpdaterRemoved",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "updater",
+						"type": "address"
+					}
+				],
+				"name": "addAuthorizedUpdater",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					}
+				],
+				"name": "areMetricsFresh",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "authorizedUpdaters",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					}
+				],
+				"name": "getRecommendedTokenAllocation",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					}
+				],
+				"name": "getUserDetailedMetrics",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "participation",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "contribution",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "consistency",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "tokenUtilization",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint32",
+						"name": "lastUpdateTime",
+						"type": "uint32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "updater",
+						"type": "address"
+					}
+				],
+				"name": "removeAuthorizedUpdater",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_authority",
+						"type": "address"
+					}
+				],
+				"name": "setStudyDAOAuthority",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "studyDAOAuthority",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "metricType",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "value",
+						"type": "uint8"
+					}
+				],
+				"name": "updateSingleMetric",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "participation",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "contribution",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "consistency",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "tokenUtilization",
+						"type": "uint8"
+					}
+				],
+				"name": "updateUserMetrics",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "Kernel contract that recommends token allocation percentages based on user engagement",
+			"kind": "dev",
+			"methods": {
+				"addAuthorizedUpdater(address)": {
+					"details": "Add an authorized updater",
+					"params": {
+						"updater": "Address to authorize for metric updates"
+					}
+				},
+				"areMetricsFresh(address)": {
+					"details": "KERNEL FUNCTION: Check if a user's metrics are fresh enough to be reliable",
+					"params": {
+						"user": "Address of the user"
+					},
+					"returns": {
+						"_0": "isFresh Whether the metrics are fresh (updated within 14 days)"
+					}
+				},
+				"getRecommendedTokenAllocation(address)": {
+					"details": "KERNEL FUNCTION: Get recommended token allocation for a user",
+					"params": {
+						"user": "Address of the user"
+					},
+					"returns": {
+						"_0": "allocation Recommended allocation percentage (0-100)"
+					}
+				},
+				"getUserDetailedMetrics(address)": {
+					"details": "Get detailed user metrics (for admin/UI use)",
+					"params": {
+						"user": "Address of the user"
+					},
+					"returns": {
+						"consistency": "Consistency score",
+						"contribution": "Contribution score",
+						"lastUpdateTime": "Last update timestamp",
+						"participation": "Participation score",
+						"tokenUtilization": "Token utilization score"
+					}
+				},
+				"removeAuthorizedUpdater(address)": {
+					"details": "Remove an authorized updater",
+					"params": {
+						"updater": "Address to remove authorization from"
+					}
+				},
+				"setStudyDAOAuthority(address)": {
+					"details": "Set the StudyDAO Authority address",
+					"params": {
+						"_authority": "The address of the StudyDAO Authority contract"
+					}
+				},
+				"transferOwnership(address)": {
+					"details": "Transfer ownership of the contract",
+					"params": {
+						"newOwner": "New owner address"
+					}
+				},
+				"updateSingleMetric(address,uint8,uint8)": {
+					"details": "Update individual metric",
+					"params": {
+						"metricType": "Type of metric to update (1=participation, 2=contribution, 3=consistency, 4=tokenUtilization)",
+						"user": "Address of the user",
+						"value": "New value for the metric (0-100)"
+					}
+				},
+				"updateUserMetrics(address,uint8,uint8,uint8,uint8)": {
+					"details": "Update a user's metrics",
+					"params": {
+						"consistency": "Consistency score (0-100)",
+						"contribution": "Contribution score (0-100)",
+						"participation": "Participation score (0-100)",
+						"tokenUtilization": "Token utilization score (0-100)",
+						"user": "Address of the user"
+					}
+				}
+			},
+			"title": "TokenAllocationKernel",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/TokenAllocationKernel.sol": "TokenAllocationKernel"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/TokenAllocationKernel.sol": {
+			"keccak256": "0xc4f1ce6faba9ebe7a07588fdadae9bf19b2996469f3beea7499687b94ef046c3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1a61878630d16cd7682de2de08f49ad541711e7d396d051fd81c4ecf6909ffbf",
+				"dweb:/ipfs/QmWaQacqsoTeg8gF9PzyTuGV55yngHLfCBMeLL1VRCxshE"
+			]
+		}
+	},
+	"version": 1
+}

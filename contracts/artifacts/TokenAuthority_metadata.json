@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.26+commit.8a97fa7a"
+		"version": "0.8.24+commit.e11b9ed9"
 	},
 	"language": "Solidity",
 	"output": {
@@ -9,17 +9,17 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_studyTokenAddress",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_kernelTreasury",
+						"name": "initialOwner",
 						"type": "address"
 					}
 				],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "DER_Split_Error",
+				"type": "error"
 			},
 			{
 				"inputs": [
@@ -44,36 +44,24 @@
 				"type": "error"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "bool",
-						"name": "enabled",
-						"type": "bool"
-					}
-				],
-				"name": "KernelFeaturesToggled",
-				"type": "event"
+				"inputs": [],
+				"name": "expmod_Error",
+				"type": "error"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "previousTreasury",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "newTreasury",
-						"type": "address"
-					}
-				],
-				"name": "KernelTreasuryUpdated",
-				"type": "event"
+				"inputs": [],
+				"name": "k256Decompress_Invalid_Length_Error",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "k256DeriveY_Invalid_Prefix_Error",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "recoverV_Error",
+				"type": "error"
 			},
 			{
 				"anonymous": false,
@@ -95,51 +83,62 @@
 				"type": "event"
 			},
 			{
-				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "previousFee",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "newFee",
-						"type": "uint256"
+						"internalType": "bytes",
+						"name": "executionPlan",
+						"type": "bytes"
 					}
 				],
-				"name": "PlatformFeeUpdated",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "tokenAddress",
-						"type": "address"
-					}
-				],
-				"name": "TokenRegistered",
-				"type": "event"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "calculatePlatformFee",
+				"name": "_validateExecution",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "bytes",
 						"name": "",
-						"type": "uint256"
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "auth",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "executionPlan",
+						"type": "bytes"
+					}
+				],
+				"name": "getOpinion",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_password",
+						"type": "string"
+					}
+				],
+				"name": "getSigningKeypairPrivateKey",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
 					}
 				],
 				"stateMutability": "view",
@@ -147,48 +146,41 @@
 			},
 			{
 				"inputs": [],
-				"name": "getKernelConfiguration",
+				"name": "getSigningKeypairPublicKey",
 				"outputs": [
 					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					},
+					{
 						"internalType": "address",
-						"name": "tokenAddress",
+						"name": "",
 						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "auth",
+						"type": "bytes"
 					},
 					{
 						"internalType": "uint256",
-						"name": "feePercentage",
+						"name": "kernelId",
 						"type": "uint256"
-					},
+					}
+				],
+				"name": "isKernelAllowed",
+				"outputs": [
 					{
 						"internalType": "bool",
-						"name": "isEnabled",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "kernelFeaturesEnabled",
-				"outputs": [
-					{
-						"internalType": "bool",
 						"name": "",
 						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "kernelTreasury",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -208,45 +200,22 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "platformFeePercentage",
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "entryId",
+						"type": "bytes32"
+					}
+				],
+				"name": "registerdApp",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "bytes",
 						"name": "",
-						"type": "uint256"
+						"type": "bytes"
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "processTransaction",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "success",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -257,29 +226,147 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "studyToken",
-				"outputs": [
+				"inputs": [
 					{
-						"internalType": "contract StudyToken",
-						"name": "",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "kernelId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "allowed",
+						"type": "bool"
 					}
 				],
-				"stateMutability": "view",
+				"name": "setKernel",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
+						"internalType": "bytes32",
+						"name": "runtimeDigest",
+						"type": "bytes32"
+					},
+					{
 						"internalType": "bool",
-						"name": "_enabled",
+						"name": "allowed",
 						"type": "bool"
 					}
 				],
-				"name": "toggleKernelFeatures",
+				"name": "setRuntimeDigest",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "pubKey",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "privKey",
+						"type": "bytes"
+					}
+				],
+				"name": "setSigningKeypair",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_password",
+						"type": "string"
+					}
+				],
+				"name": "setSigningKeypairRetrievalPassword",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "krnlNodePubKey",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "allowed",
+						"type": "bool"
+					}
+				],
+				"name": "setWhitelist",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "auth",
+						"type": "bytes"
+					},
+					{
+						"internalType": "address",
+						"name": "senderAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes",
+						"name": "executionPlan",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "functionParams",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "kernelParams",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "kernelResponses",
+						"type": "bytes"
+					}
+				],
+				"name": "sign",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -294,36 +381,9 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_newTreasury",
-						"type": "address"
-					}
-				],
-				"name": "updateKernelTreasury",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_newFeePercentage",
-						"type": "uint256"
-					}
-				],
-				"name": "updatePlatformFee",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
-			"details": "Contract for managing token permissions and configurations on Kernel platform",
 			"errors": {
 				"OwnableInvalidOwner(address)": [
 					{
@@ -338,70 +398,16 @@
 			},
 			"kind": "dev",
 			"methods": {
-				"calculatePlatformFee(uint256)": {
-					"details": "Calculate platform fee for a given amount",
-					"params": {
-						"amount": "The amount to calculate fee on"
-					},
-					"returns": {
-						"_0": "The fee amount"
-					}
-				},
-				"constructor": {
-					"details": "Constructor to create the token authority",
-					"params": {
-						"_kernelTreasury": "Address of the Kernel treasury",
-						"_studyTokenAddress": "Address of the StudyToken contract"
-					}
-				},
-				"getKernelConfiguration()": {
-					"details": "Get token configuration for Kernel platform",
-					"returns": {
-						"feePercentage": "The platform fee percentage in basis points",
-						"isEnabled": "Whether Kernel features are enabled",
-						"tokenAddress": "The StudyToken address"
-					}
-				},
 				"owner()": {
 					"details": "Returns the address of the current owner."
-				},
-				"processTransaction(address,address,uint256)": {
-					"details": "Process a transaction with platform fee",
-					"params": {
-						"amount": "Amount of tokens to transfer",
-						"from": "Address sending tokens",
-						"to": "Address receiving tokens"
-					},
-					"returns": {
-						"success": "Whether the operation was successful"
-					}
 				},
 				"renounceOwnership()": {
 					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
 				},
-				"toggleKernelFeatures(bool)": {
-					"details": "Toggle Kernel platform features",
-					"params": {
-						"_enabled": "Whether Kernel features should be enabled"
-					}
-				},
 				"transferOwnership(address)": {
 					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
-				},
-				"updateKernelTreasury(address)": {
-					"details": "Update the Kernel treasury address",
-					"params": {
-						"_newTreasury": "New treasury address"
-					}
-				},
-				"updatePlatformFee(uint256)": {
-					"details": "Update the platform fee percentage",
-					"params": {
-						"_newFeePercentage": "New fee in basis points (1/100 of a percent)"
-					}
 				}
 			},
-			"title": "TokenAuthority",
 			"version": 1
 		},
 		"userdoc": {
@@ -414,7 +420,7 @@
 		"compilationTarget": {
 			"contracts/TokenAuthority.sol": "TokenAuthority"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -423,47 +429,32 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": []
+		"remappings": [],
+		"viaIR": true
 	},
 	"sources": {
+		"@oasisprotocol/sapphire-contracts/contracts/EthereumUtils.sol": {
+			"keccak256": "0x79e34844793f4a8970d31eb4cbdd91e060fb93da4cbd28b7b8aad5c22e1f6666",
+			"license": "Apache-2.0",
+			"urls": [
+				"bzz-raw://f40fdf3c56b34ded8ba2e810e9464eafdd184a29031c5322cb8ff33ca0f4a8ef",
+				"dweb:/ipfs/QmRC1fBpi7yETwN2ZxeDf1ZBgtwRiHWzQ1DYfUJ2jxWkok"
+			]
+		},
+		"@oasisprotocol/sapphire-contracts/contracts/Sapphire.sol": {
+			"keccak256": "0x87a43ed0f7c74b7da8ee58d349f466fb2947bf71f6fca10174ebad96d59e2c8a",
+			"license": "Apache-2.0",
+			"urls": [
+				"bzz-raw://8c3d01aeee75ce66f388d822ab2cb25a304c2829aac2a1b61916e8e693e3537b",
+				"dweb:/ipfs/QmRVT29xXWJMvxyasFWwDVHoajYsNFqjbTbJFpn9iCgFqs"
+			]
+		},
 		"@openzeppelin/contracts/access/Ownable.sol": {
 			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
 				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
-			]
-		},
-		"@openzeppelin/contracts/interfaces/draft-IERC6093.sol": {
-			"keccak256": "0x880da465c203cec76b10d72dbd87c80f387df4102274f23eea1f9c9b0918792b",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://399594cd8bb0143bc9e55e0f1d071d0d8c850a394fb7a319d50edd55d9ed822b",
-				"dweb:/ipfs/QmbPZzgtT6LEm9CMqWfagQFwETbV1ztpECBB1DtQHrKiRz"
-			]
-		},
-		"@openzeppelin/contracts/token/ERC20/ERC20.sol": {
-			"keccak256": "0x41f6b3b9e030561e7896dbef372b499cc8d418a80c3884a4d65a68f2fdc7493a",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://80b0992a11b2fd1f75ced2971696d07bbd1d19ce6761dd50d8b6d48aa435f42a",
-				"dweb:/ipfs/QmZDe5xd2gXHjVEjv9t8C1KQ68K5T8qFwdinwQgmP3rF3x"
-			]
-		},
-		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
-			"keccak256": "0xe06a3f08a987af6ad2e1c1e774405d4fe08f1694b67517438b467cecf0da0ef7",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://df6f0c459663c9858b6cba2cda1d14a7d05a985bed6d2de72bd8e78c25ee79db",
-				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
-			]
-		},
-		"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
-			"keccak256": "0x70f2f713b13b7ce4610bcd0ac9fec0f3cc43693b043abcb8dc40a42a726eb330",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://c13d13304ac79a83ab1c30168967d19e2203342ebbd6a9bbce4db7550522dcbf",
-				"dweb:/ipfs/QmeN5jKMN2vw5bhacr6tkg78afbTTZUeaacNHqjWt4Ew1r"
 			]
 		},
 		"@openzeppelin/contracts/utils/Context.sol": {
@@ -474,20 +465,68 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
-		"contracts/StudyToken.sol": {
-			"keccak256": "0x219a3d7da16fd6da0842383352c6c0ccceb5507b4f5e349214554ea0a7a4566c",
+		"@openzeppelin/contracts/utils/Panic.sol": {
+			"keccak256": "0xf7fe324703a64fc51702311dc51562d5cb1497734f074e4f483bfb6717572d7a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a02992842f5b96f294ccdf6cf50cb9e88e85200a4ae2f05427abf43e2d224fb5",
-				"dweb:/ipfs/QmRzAF8EvTq177hsD6PP8tUxxLCNiyE3mcWB5PYXpasw7S"
+				"bzz-raw://c6a5ff4f9fd8649b7ee20800b7fa387d3465bd77cf20c2d1068cd5c98e1ed57a",
+				"dweb:/ipfs/QmVSaVJf9FXFhdYEYeCEfjMVHrxDh5qL4CGkxdMWpQCrqG"
+			]
+		},
+		"@openzeppelin/contracts/utils/Strings.sol": {
+			"keccak256": "0x81c274a60a7ae232ae3dc9ff3a4011b4849a853c13b0832cd3351bb1bb2f0dae",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9da0c20dc74358a2a76330818f3bac9d1e2ce3371aec847b9cbf5d147fbae4f6",
+				"dweb:/ipfs/QmeczhmnFv1hbXKGLwbYXY6Rrytc9a5A2YaRi5QMMgjPnb"
+			]
+		},
+		"@openzeppelin/contracts/utils/cryptography/ECDSA.sol": {
+			"keccak256": "0x69f54c02b7d81d505910ec198c11ed4c6a728418a868b906b4a0cf29946fda84",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8e25e4bdb7ae1f21d23bfee996e22736fc0ab44cfabedac82a757b1edc5623b9",
+				"dweb:/ipfs/QmQdWQvB6JCP9ZMbzi8EvQ1PTETqkcTWrbcVurS7DKpa5n"
+			]
+		},
+		"@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol": {
+			"keccak256": "0x26670fef37d4adf55570ba78815eec5f31cb017e708f61886add4fc4da665631",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b16d45febff462bafd8a5669f904796a835baf607df58a8461916d3bf4f08c59",
+				"dweb:/ipfs/QmU2eJFpjmT4vxeJWJyLeQb8Xht1kdB8Y6MKLDPFA9WPux"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/Math.sol": {
+			"keccak256": "0x1225214420c83ebcca88f2ae2b50f053aaa7df7bd684c3e878d334627f2edfc6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6c5fab4970634f9ab9a620983dc1c8a30153981a0b1a521666e269d0a11399d3",
+				"dweb:/ipfs/QmVRnBC575MESGkEHndjujtR7qub2FzU9RWy9eKLp4hPZB"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/SafeCast.sol": {
+			"keccak256": "0x195533c86d0ef72bcc06456a4f66a9b941f38eb403739b00f21fd7c1abd1ae54",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b1d578337048cad08c1c03041cca5978eff5428aa130c781b271ad9e5566e1f8",
+				"dweb:/ipfs/QmPFKL2r9CBsMwmUqqdcFPfHZB2qcs9g1HDrPxzWSxomvy"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/SignedMath.sol": {
+			"keccak256": "0xb1970fac7b64e6c09611e6691791e848d5e3fe410fa5899e7df2e0afd77a99e3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://db5fbb3dddd8b7047465b62575d96231ba8a2774d37fb4737fbf23340fabbb03",
+				"dweb:/ipfs/QmVUSvooZKEdEdap619tcJjTLcAuH6QBdZqAzWwnAXZAWJ"
 			]
 		},
 		"contracts/TokenAuthority.sol": {
-			"keccak256": "0xa3340d9be9e6b830df8a6c69e784d76a3a90c2481bfebe5bea0b3a2705d1d051",
+			"keccak256": "0xe40ed9866cb744b15d46492a0c7e6fa8397522f60c1f17357b5cad8c961975ba",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5ac31a986ad8cb9b0f78bd84c26158e9752e9d8378dc8c01e27d78b48746c858",
-				"dweb:/ipfs/QmccLvi7hgpNWwUcosASWj73rExEW5EmabF9pG79Ehxb1C"
+				"bzz-raw://6eb54f01c7cc2ae06428cc7d1bf298f00ae4dd0706327dcb83081b6c00d83483",
+				"dweb:/ipfs/QmTBtyF4jWvjh6oFenEeoWPcit5oXbqSYbWwMkvDKULS9j"
 			]
 		}
 	},
