@@ -6,35 +6,27 @@ import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@oasisprotocol/sapphire-contracts/contracts/Sapphire.sol";
 import "@oasisprotocol/sapphire-contracts/contracts/EthereumUtils.sol";
+
 // ===============================
-// Step 1
-// This TA contract is specifically built to be compatible with kernel ID 337 as an example.
-// If you are using this source code as a project template, make sure you change the following lines.
-// Line 57
-// Line 58
-// Line 59
+// Token Authority Contract for Kernel 1593
+// This contract is specifically configured for Kernel ID 1593
+// which provides token allocation recommendations via getRecommendedTokenAllocation()
+// returning uint8 values representing allocation percentages
 // ===============================
-// Step 2
-// The decoding part from this TA contract is for comparing the responses from kernel(s).
-// You would have to modify the data type to match your selected kernel(s).
-// Line 106
-// Line 108
-// ===============================
-// Step 3
-// TA also checks the node whitelist and runtime digest of the node.
-// If you intend to use RPC endpoints other than version “https://v0-0-1-rpc.node.lat”, please ensure that you update the following lines accordingly.
-// Line 63
-// Line 65
-// ===============================
+
 contract TokenAuthority is Ownable {
     Keypair private signingKeypair;
     Keypair private accessKeypair;
     bytes32 private signingKeypairRetrievalPassword;
-    // https://api.docs.oasis.io/sol/sapphire-contracts/contracts/Sapphire.sol/library.Sapphire.html#secp256k1--secp256r1
+    
+    // Threshold for token allocation recommendation (0-100)
+    uint8 public allocationThreshold = 50; // Default: require allocation >= 50%
+    
     struct Keypair {
         bytes pubKey;
         bytes privKey;
     }
+    
     struct Execution {
         uint256 kernelId;
         bytes result;
@@ -49,19 +41,20 @@ contract TokenAuthority is Ownable {
     mapping(bytes32 => bool) private runtimeDigests; // runtimeDigest to bool
     mapping(uint256 => bool) private kernels; // kernelId to bool
 
+    event AllocationThresholdUpdated(uint8 oldThreshold, uint8 newThreshold);
+    event KernelValidated(uint256 kernelId, uint8 allocation, bool passed);
+
     constructor(address initialOwner) Ownable(initialOwner) {
         signingKeypair = _generateKey();
         accessKeypair = _generateKey();
         
-        // Set allowed kernel(s)
-        // kernels[REPLACE_WITH_KERNEL_ID] = true;
-        // kernels[REPLACE_WITH_KERNEL_ID] = true;
-        // kernels[REPLACE_WITH_KERNEL_ID] = true;
-        kernels[239] = true;
+        // Set allowed kernel - Kernel 1593 for token allocation recommendations
+        kernels[1593] = true;
 
-        // Set node whitelist
+        // Set node whitelist (update with actual node addresses as provided by KRNL platform)
         whitelist[address(0xc770EAc29244C1F88E14a61a6B99d184bfAe93f5)] = true;
-        // Set runtime digest
+        
+        // Set runtime digest (update with actual runtime digest from KRNL platform)
         runtimeDigests[
             0x876924e18dd46dd3cbcad570a87137bbd828a7d0f3cad309f78ad2c9402eeeb7
         ] = true;
@@ -80,57 +73,116 @@ contract TokenAuthority is Ownable {
                 auth,
                 (bytes32, bytes, bytes32, bytes, uint256, uint256, bytes)
             );
-        require(_verifyAccessToken(entryId, accessToken));
+        require(_verifyAccessToken(entryId, accessToken), "Invalid access token");
+        require(_verifyRuntimeDigest(runtimeDigest, runtimeDigestSignature), "Invalid runtime digest");
         _;
     }
+    
     modifier onlyValidated(bytes calldata executionPlan) {
-        require(_verifyExecutionPlan(executionPlan));
+        require(_verifyExecutionPlan(executionPlan), "Execution plan not validated");
         _;
     }
+    
     modifier onlyAllowedKernel(uint256 kernelId) {
-        require(kernels[kernelId]);
+        require(kernels[kernelId], "Kernel not allowed");
         _;
     }
 
+    /**
+     * @dev Set the minimum allocation threshold required for validation
+     * @param _threshold The minimum allocation percentage (0-100)
+     */
+    function setAllocationThreshold(uint8 _threshold) external onlyOwner {
+        require(_threshold <= 100, "Threshold must be <= 100");
+        uint8 oldThreshold = allocationThreshold;
+        allocationThreshold = _threshold;
+        emit AllocationThresholdUpdated(oldThreshold, _threshold);
+    }
 
+    /**
+     * @dev Validate execution results from Kernel 1593
+     * @param executionPlan The execution plan containing kernel results
+     * @return Encoded validated execution results
+     */
     function _validateExecution(
         bytes calldata executionPlan
-    ) external view returns (bytes memory) {
+    ) external returns (bytes memory) {
         Execution[] memory _executions = abi.decode(
             executionPlan,
             (Execution[])
         );
 
         for (uint256 i = 0; i < _executions.length; i++) {
-            // Change the line below to match with your selected kernel(s)
-            if (_executions[i].kernelId == 239) {
-                // Change the code below to match with the return data type of this kernel
-                uint256 result = abi.decode(_executions[i].result, (uint256));
-                if (result > 0) {
+            // Process Kernel 1593 - Token Allocation Recommendation
+            if (_executions[i].kernelId == 1593) {
+                // Decode the uint8 allocation result from the kernel
+                uint8 recommendedAllocation = abi.decode(_executions[i].result, (uint8));
+                
+                // Validate against threshold
+                if (recommendedAllocation >= allocationThreshold) {
                     _executions[i].isValidated = true;
                     _executions[i].opinion = true;
+                    _executions[i].opinionDetails = string(abi.encodePacked(
+                        "Allocation recommendation: ", 
+                        _uint8ToString(recommendedAllocation),
+                        "% (meets threshold: ",
+                        _uint8ToString(allocationThreshold),
+                        "%)"
+                    ));
                 } else {
                     _executions[i].isValidated = false;
                     _executions[i].opinion = false;
+                    _executions[i].opinionDetails = string(abi.encodePacked(
+                        "Allocation recommendation: ", 
+                        _uint8ToString(recommendedAllocation),
+                        "% (below threshold: ",
+                        _uint8ToString(allocationThreshold),
+                        "%)"
+                    ));
                 }
+                
+                emit KernelValidated(1593, recommendedAllocation, _executions[i].opinion);
             }
-            // ===============================
-            // If you have more than 1 kernel, you can add more conditions
-            // if (_executions[i].kernelId == REPLACE_WITH_KERNEL_ID) {
-            //     // Change the code below to match with the return data type of this kernel
-            //     bool foo = abi.decode(_executions[i].result, (bool));
-            //     if (foo == true) {
-            //         _executions[i].isValidated = true;
-            //         _executions[i].opinion = true;
-            //     } else {
-            //         _executions[i].isValidated = false;
-            //         _executions[i].opinion = false;
-            //     }
-            // }
-            // ===============================
+            
+            // Add support for additional kernels if needed
+            // Example for another kernel:
+            /*
+            else if (_executions[i].kernelId == ANOTHER_KERNEL_ID) {
+                // Handle different return type as needed
+                bool result = abi.decode(_executions[i].result, (bool));
+                _executions[i].isValidated = true;
+                _executions[i].opinion = result;
+                _executions[i].opinionDetails = result ? "Condition met" : "Condition not met";
+            }
+            */
         }
         
         return abi.encode(_executions);
+    }
+
+    /**
+     * @dev Convert uint8 to string for logging purposes
+     */
+    function _uint8ToString(uint8 value) private pure returns (string memory) {
+        if (value == 0) {
+            return "0";
+        }
+        
+        uint8 temp = value;
+        uint8 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint8(value % 10)));
+            value /= 10;
+        }
+        
+        return string(buffer);
     }
 
     function _generateKey() private view returns (Keypair memory) {
@@ -162,6 +214,7 @@ contract TokenAuthority is Ownable {
         bytes32 runtimeDigest,
         bytes memory runtimeDigestSignature
     ) private view returns (bool) {
+        require(runtimeDigests[runtimeDigest], "Runtime digest not whitelisted");
         address recoverPubKeyAddr = ECDSA.recover(
             runtimeDigest,
             runtimeDigestSignature
@@ -199,6 +252,7 @@ contract TokenAuthority is Ownable {
         return true;
     }
 
+    // Setter functions for contract configuration
     function setSigningKeypair(
         bytes calldata pubKey,
         bytes calldata privKey
@@ -212,26 +266,6 @@ contract TokenAuthority is Ownable {
         signingKeypairRetrievalPassword = keccak256(
             abi.encodePacked(_password)
         );
-    }
-
-    function getSigningKeypairPublicKey()
-        external
-        view
-        returns (bytes memory, address)
-    {
-        address signingKeypairAddress = EthereumUtils
-            .k256PubkeyToEthereumAddress(signingKeypair.pubKey);
-        return (signingKeypair.pubKey, signingKeypairAddress);
-    }
-
-    function getSigningKeypairPrivateKey(
-        string calldata _password
-    ) external view onlyOwner returns (bytes memory) {
-        require(
-            signingKeypairRetrievalPassword ==
-                keccak256(abi.encodePacked(_password))
-        );
-        return signingKeypair.privKey;
     }
 
     function setWhitelist(
@@ -252,6 +286,33 @@ contract TokenAuthority is Ownable {
         kernels[kernelId] = allowed;
     }
 
+    // Getter functions
+    function getSigningKeypairPublicKey()
+        external
+        view
+        returns (bytes memory, address)
+    {
+        address signingKeypairAddress = EthereumUtils
+            .k256PubkeyToEthereumAddress(signingKeypair.pubKey);
+        return (signingKeypair.pubKey, signingKeypairAddress);
+    }
+
+    function getSigningKeypairPrivateKey(
+        string calldata _password
+    ) external view onlyOwner returns (bytes memory) {
+        require(
+            signingKeypairRetrievalPassword ==
+                keccak256(abi.encodePacked(_password)),
+            "Invalid password"
+        );
+        return signingKeypair.privKey;
+    }
+
+    function getAllocationThreshold() external view returns (uint8) {
+        return allocationThreshold;
+    }
+
+    // Core functionality functions
     function registerdApp(
         bytes32 entryId
     ) external view returns (bytes memory) {
@@ -272,11 +333,10 @@ contract TokenAuthority is Ownable {
         return kernels[kernelId];
     }
 
-    // example use case: only give 'true' opinion when all kernels are executed with expected results and proofs
     function getOpinion(
         bytes calldata auth,
         bytes calldata executionPlan
-    ) external view onlyAuthorized(auth) returns (bytes memory) {
+    ) external onlyAuthorized(auth) returns (bytes memory) {
         try this._validateExecution(executionPlan) returns (
             bytes memory result
         ) {
@@ -295,23 +355,16 @@ contract TokenAuthority is Ownable {
         bytes calldata kernelResponses
     )
         external
-        view
         onlyValidated(executionPlan)
         onlyAuthorized(auth)
         returns (bytes memory, bytes32, bytes memory, bool)
     {
-        (
-            bytes32 id,
-            bytes memory accessToken,
-            bytes32 runtimeDigest,
-            bytes memory runtimeDigestSignature,
-            uint256 nonce,
-            uint256 blockTimeStamp,
-            bytes memory authSignature // id, accessToken, runtimeDigest, runtimeDigestSignature, nonce, blockTimeStamp, authSignature
-        ) = abi.decode(
+        // Only decode the nonce value that we actually use
+        (,,,, uint256 nonce,,) = abi.decode(
                 auth,
                 (bytes32, bytes, bytes32, bytes, uint256, uint256, bytes)
             );
+            
         // Compute kernelResponsesDigest
         bytes32 kernelResponsesDigest = keccak256(
             abi.encodePacked(kernelResponses, senderAddress)
@@ -333,12 +386,13 @@ contract TokenAuthority is Ownable {
             kernelResponsesRSV.s,
             uint8(kernelResponsesRSV.v)
         );
+        
         bytes32 functionParamsDigest = keccak256(functionParams);
-        // Compute kernelParamsDigest
         bytes32 kernelParamsDigest = keccak256(
             abi.encodePacked(kernelParams, senderAddress)
         );
         bool finalOpinion = _getFinalOpinion(executionPlan);
+        
         // Compute dataDigest
         bytes32 dataDigest = keccak256(
             abi.encodePacked(
@@ -349,6 +403,7 @@ contract TokenAuthority is Ownable {
                 finalOpinion
             )
         );
+        
         bytes memory signature = Sapphire.sign(
             Sapphire.SigningAlg.Secp256k1PrehashedKeccak256,
             signingKeypair.privKey,
@@ -365,6 +420,7 @@ contract TokenAuthority is Ownable {
             rsv.s,
             uint8(rsv.v)
         );
+        
         return (
             kernelResponsesSignatureEth,
             kernelParamsDigest,
