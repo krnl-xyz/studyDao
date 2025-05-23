@@ -58,7 +58,7 @@ study-dao/
 ### Run the App
 ```bash
 git git@github.com:krnl-xyz/studyDao.git
-cd Team-StudyDao/frontend
+cd studyDao/frontend
 npm install
 npm run dev
 ````
