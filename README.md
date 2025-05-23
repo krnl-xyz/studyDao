@@ -109,6 +109,8 @@ Pull requests are welcome! Please open an issue first to discuss major changes.
 * **Type**: Onchain View Adapter
 * **Network**: Ethereum (ID: 1)
 * **Return Type**: `uint8` (0–255: allocation %)
+* **Smart Contract** :0x409C5d635F80bCaF790fE57cB081CD7f444a985A
+* **Registered smart contract ID** : 8135
 
 ### Core Purpose
 
