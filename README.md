@@ -57,7 +57,7 @@ study-dao/
 
 ### Run the App
 ```bash
-git clone git@github.com:Blockbridge-Network/Team-StudyDao.git
+git git@github.com:krnl-xyz/studyDao.git
 cd Team-StudyDao/frontend
 npm install
 npm run dev
