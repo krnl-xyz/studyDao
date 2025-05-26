@@ -3,7 +3,7 @@
 **StudyDAO** is a decentralized study platform that empowers students to form study groups, log focused learning sessions, and earn $STUDY and ARKT tokens as incentives. With a Firebase-powered backend and smart contracts managing token rewards and staking, the app integrates learning, collaboration, and Web3 mechanics into one seamless experience.
 
 ## 🌐 Live App
-👉 **[https://study-dao-rose.vercel.app](https://study-dao-rose.vercel.app)**
+👉 **[https://study-daoo.vercel.app](https://study-daoo.vercel.app)**
 
 ## 🌐 App Video Demo
 👉 **[https://youtu.be/RyHTBs9Vip8]**
