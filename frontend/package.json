@@ -10,9 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "ethers": "^5.7.2",
+    "ethers": "^5.8.0",
     "firebase": "^11.6.1",
     "framer-motion": "^12.5.0",
+    "krnl-sdk": "^0.0.5",
     "lucide-react": "^0.475.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

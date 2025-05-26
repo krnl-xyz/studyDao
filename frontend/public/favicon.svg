@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background hexagon -->
+  <polygon 
+    points="50,5 90,25 90,75 50,95 10,75 10,25" 
+    fill="url(#hexGradient)" 
+    stroke="url(#borderGradient)" 
+    stroke-width="3"
+    stroke-linejoin="round" />
+  
+  <!-- Concentric circles representing blockchain -->
+  <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" />
+  <circle cx="50" cy="50" r="20" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" />
+  <circle cx="50" cy="50" r="10" fill="rgba(255,255,255,0.8)" stroke="white" stroke-width="1" />
+  
+  <!-- Connection nodes -->
+  <circle cx="30" cy="40" r="4" fill="white" />
+  <circle cx="70" cy="40" r="4" fill="white" />
+  <circle cx="50" cy="75" r="4" fill="white" />
+  
+  <!-- Connection lines -->
+  <line x1="30" y1="40" x2="50" y2="50" stroke="white" stroke-width="1.5" />
+  <line x1="50" y1="50" x2="70" y2="40" stroke="white" stroke-width="1.5" />
+  <line x1="50" y1="50" x2="50" y2="75" stroke="white" stroke-width="1.5" />
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+    <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60A5FA" />
+      <stop offset="100%" stop-color="#A855F7" />
+    </linearGradient>
+  </defs>
+</svg>
